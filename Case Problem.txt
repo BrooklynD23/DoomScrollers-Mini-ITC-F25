@@ -1,0 +1,36 @@
+MissaTech Data Breach Impact Simulation 
+Background 
+MissaTech, a fast-talking software outfit known for its slick business productivity tools, had been 
+climbing the ranks fast. Too fast, maybe. Somewhere between the cloud servers and the caffeine-fueled 
+dev teams, someone left a door unlocked. 
+Now customer data — names, numbers, the works — has slipped through the cracks. Multiple systems 
+are caught in the mess: CRM, Billing, HR, Support, and Analytics. Nobody’s sure if it was negligence, 
+sabotage, or just bad luck, but the fallout is real. 
+The higher-ups want answers before the story hits the press. And that’s where you come in. 
+Problem Statement 
+MissaTech’s leadership has pulled you into the smoke-filled conference room with one job: 
+figure out what happened, how bad it is, and how to make sure it doesn’t happen again. 
+They need you to: 
+●  Track the damage.  How much data was lost? What’s the price tag? 
+●  Find the weak spots.  Which systems and regions took the hardest hit? 
+The board doesn’t want guesses or gut feelings — they want numbers, charts, and cold, hard evidence. 
+Scope of Work 
+Teams should: 
+●  Quantify the  overall business impact  of the breach using the dataset (cost, records exposed, data 
+sensitivity). 
+●  Identify  patterns or risk trends  , such as regions or systems that appear more frequently or have 
+higher losses. 
+●  Recommend  which systems or processes  should be prioritized for stronger security investment. 
+●  Communicate insights clearly with  data-driven visuals and summaries  suitable for business 
+leadership. 
+Tasks 
+1. Explore and Summarize 
+●  Calculate total and average cost by  system  ,  region  , and  attack_type  . 
+●  Identify the  top 3 costliest incidents  and describe their characteristics. 
+●  Compute average  detection  and  response times  across systems. 
+2. Visualize 
+●  Create at least  two visuals 
+3. Interpret and Recommend 
+●  Which systems or regions caused the largest financial impact? 
+●  How might faster detection or response reduce overall cost? 
+●  What lessons should MissaTech learn to strengthen its data protection?
