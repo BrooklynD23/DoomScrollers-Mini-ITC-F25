@@ -216,6 +216,90 @@ def plot_correlation_matrix():
     print(f"Saved: correlation_matrix.png")
 
 
+def plot_pareto_analysis():
+    """Pareto chart showing cumulative cost concentration (80/20 rule)."""
+    df = get_all_incidents()
+
+    # Sort incidents by cost descending
+    df_sorted = df.sort_values('estimated_total_cost_usd', ascending=False).reset_index(drop=True)
+    df_sorted['cumulative_cost'] = df_sorted['estimated_total_cost_usd'].cumsum()
+    df_sorted['cumulative_pct'] = df_sorted['cumulative_cost'] / df_sorted['estimated_total_cost_usd'].sum() * 100
+    df_sorted['incident_pct'] = (df_sorted.index + 1) / len(df_sorted) * 100
+
+    fig, ax1 = plt.subplots(figsize=(12, 6))
+
+    # Bar chart for individual costs
+    bars = ax1.bar(range(len(df_sorted)), df_sorted['estimated_total_cost_usd'] / 1e6,
+                   color='#3498db', alpha=0.7, label='Individual Cost')
+    ax1.set_xlabel('Incidents (sorted by cost)', fontsize=12)
+    ax1.set_ylabel('Cost (Millions USD)', fontsize=12, color='#3498db')
+    ax1.tick_params(axis='y', labelcolor='#3498db')
+
+    # Line chart for cumulative percentage
+    ax2 = ax1.twinx()
+    ax2.plot(range(len(df_sorted)), df_sorted['cumulative_pct'],
+             color='#e74c3c', linewidth=2, marker='', label='Cumulative %')
+    ax2.axhline(y=80, color='#2ecc71', linestyle='--', linewidth=1.5, label='80% threshold')
+    ax2.set_ylabel('Cumulative Cost (%)', fontsize=12, color='#e74c3c')
+    ax2.tick_params(axis='y', labelcolor='#e74c3c')
+
+    # Find where 80% of cost is reached
+    idx_80 = df_sorted[df_sorted['cumulative_pct'] >= 80].index[0]
+    pct_incidents_for_80 = (idx_80 + 1) / len(df_sorted) * 100
+
+    ax1.axvline(x=idx_80, color='#2ecc71', linestyle='--', linewidth=1.5)
+
+    ax1.set_title(f'Pareto Analysis: {pct_incidents_for_80:.0f}% of incidents cause 80% of costs\n'
+                  f'(Top {idx_80+1} incidents = ${df_sorted["cumulative_cost"].iloc[idx_80]/1e6:.1f}M)',
+                  fontsize=14, fontweight='bold')
+
+    # Remove x-axis tick labels for cleaner look
+    ax1.set_xticks([0, 25, 50, 75, 99])
+    ax1.set_xticklabels(['1', '25', '50', '75', '100'])
+
+    plt.tight_layout()
+    plt.savefig(OUTPUT_DIR / 'pareto_analysis.png', dpi=150)
+    plt.close()
+    print(f"Saved: pareto_analysis.png")
+
+
+def plot_system_region_top10():
+    """Bar chart of top 10 highest-cost system-region combinations."""
+    df = get_all_incidents()
+
+    # Aggregate by system-region
+    agg_df = df.groupby(['system_name', 'region']).agg({
+        'estimated_total_cost_usd': 'sum',
+        'records_exposed': 'sum',
+        'detection_delay_days': 'mean'
+    }).reset_index()
+
+    # Get top 10
+    top10 = agg_df.nlargest(10, 'estimated_total_cost_usd')
+    top10['combo'] = top10['system_name'] + '\n' + top10['region']
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+
+    colors = ['#e74c3c' if x == top10['estimated_total_cost_usd'].max() else '#3498db'
+              for x in top10['estimated_total_cost_usd']]
+
+    bars = ax.barh(top10['combo'], top10['estimated_total_cost_usd'] / 1e6, color=colors)
+
+    ax.set_xlabel('Total Cost (Millions USD)', fontsize=12)
+    ax.set_ylabel('System - Region', fontsize=12)
+    ax.set_title('Top 10 Highest-Cost System-Region Combinations', fontsize=14, fontweight='bold')
+
+    # Add value labels
+    for bar, cost in zip(bars, top10['estimated_total_cost_usd']):
+        ax.text(bar.get_width() + 0.05, bar.get_y() + bar.get_height()/2,
+                f'${cost/1e6:.2f}M', ha='left', va='center', fontsize=9)
+
+    plt.tight_layout()
+    plt.savefig(OUTPUT_DIR / 'top10_system_region.png', dpi=150)
+    plt.close()
+    print(f"Saved: top10_system_region.png")
+
+
 def generate_all_visualizations():
     """Generate all visualizations."""
     print("\nGenerating visualizations...")
@@ -229,6 +313,8 @@ def generate_all_visualizations():
     plot_risk_matrix()
     plot_sensitivity_analysis()
     plot_correlation_matrix()
+    plot_pareto_analysis()
+    plot_system_region_top10()
 
     print(f"\nAll visualizations saved to: {OUTPUT_DIR}")
 

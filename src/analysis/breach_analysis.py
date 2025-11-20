@@ -87,9 +87,13 @@ def risk_score_calculation():
     """
     df = query(sql)
 
-    # Normalize each factor to 0-1 scale
+    # Normalize each factor to 0-1 scale (handle division by zero)
     for col in ['incident_frequency', 'total_cost', 'avg_sensitivity', 'avg_detection', 'total_records']:
-        df[f'{col}_norm'] = (df[col] - df[col].min()) / (df[col].max() - df[col].min())
+        col_range = df[col].max() - df[col].min()
+        if col_range == 0:
+            df[f'{col}_norm'] = 0.5  # Default to mid-range if all values are the same
+        else:
+            df[f'{col}_norm'] = (df[col] - df[col].min()) / col_range
 
     # Calculate composite risk score
     df['risk_score'] = (
