@@ -92,13 +92,15 @@ Our presentation follows a **Problem → Analysis → Solution** structure, but 
 
 > "Most of the attacks are misconfiguration, 68 out of the 100, total cost of everything is $73,615,882.35, most of the attacks were a level 5 sensitivity level followed by 4 and 3 since they tied and a level 5 is an average of $745,746.69 per attack, longest took for an attack to be detected and responded to was 34 days but it was a level 4 and not the most expensive, and only 14 didn't need a notification."
 
+**Data Correction:** The intern's Level 5 average ($745,746.69) appears to be the overall average cost. Actual Level 5 average is **$1,188,552.46**. This makes the case even stronger - Level 5 breaches are 61% more expensive than average.
+
 ### How to Use Each Insight
 
 | Intern Finding | Slide Integration | Talking Point |
 |----------------|-------------------|---------------|
 | **68/100 misconfiguration** | attack_type_distribution.png | "68% of incidents - not hackers, our own mistakes. This is fixable." |
 | **$73.6M total** | Opening hook + ROI slide | "That's $201K per day we're losing" |
-| **Level 5 = $745,746.69 avg** | sensitivity_analysis.png | "Every Level 5 breach costs us three-quarters of a million dollars" |
+| **Level 5 = $1,188,552 avg** | sensitivity_analysis.png | "Every Level 5 breach costs us nearly $1.2 million" |
 | **34-day max detection+response** | detection_response_heatmap.png | "One incident took 34 days to handle. Industry standard is under a week." |
 | **86 required notification** | Compliance risk slide | "86% of breaches required customer notification. That's 86 PR crises." |
 | **14 didn't need notification** | Potential concern | "But 14 low-sensitivity breaches may indicate data misclassification" |
