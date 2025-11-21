@@ -42,6 +42,29 @@ def main():
     print_header("STEP 1: DATA LOADING")
     df = load_csv_to_db()
 
+    # Step 1b: Data Quality Check
+    print("\nDATA QUALITY SUMMARY")
+    print("-" * 50)
+    total_rows = len(df)
+    null_counts = df.isnull().sum()
+    has_nulls = null_counts[null_counts > 0]
+
+    print(f"Total Records Loaded: {total_rows}")
+    print(f"Columns: {len(df.columns)}")
+
+    if len(has_nulls) == 0:
+        print("Data Completeness: 100% (No missing values)")
+    else:
+        print("Missing Values Detected:")
+        for col, count in has_nulls.items():
+            print(f"  - {col}: {count} ({count/total_rows*100:.1f}%)")
+
+    # Check for anomalies
+    print(f"\nData Range Validation:")
+    print(f"  - Cost range: ${df['estimated_total_cost_usd'].min():,.0f} - ${df['estimated_total_cost_usd'].max():,.0f}")
+    print(f"  - Detection delay: {df['detection_delay_days'].min()}-{df['detection_delay_days'].max()} days")
+    print(f"  - Sensitivity levels: {df['data_sensitivity_level'].min()}-{df['data_sensitivity_level'].max()}")
+
     # Step 2: Executive Summary
     print_header("STEP 2: EXECUTIVE SUMMARY")
     summary = generate_executive_summary()
@@ -162,6 +185,20 @@ def main():
     for _, row in risk_scores.iterrows():
         print(f"{row['system_name']:<12} {row['region']:<18} {row['risk_score']:>8.1f}/100 "
               f"${row['total_cost']:>12,.2f} {int(row['incident_frequency']):>10}")
+
+    # Step 8b: Pareto Analysis Summary
+    print("\nPARETO ANALYSIS (80/20 RULE)")
+    print("-" * 50)
+    from src.data.database import get_all_incidents
+    pareto_df = get_all_incidents().sort_values('estimated_total_cost_usd', ascending=False).reset_index(drop=True)
+    pareto_df['cumulative_cost'] = pareto_df['estimated_total_cost_usd'].cumsum()
+    pareto_df['cumulative_pct'] = pareto_df['cumulative_cost'] / pareto_df['estimated_total_cost_usd'].sum() * 100
+    idx_80 = pareto_df[pareto_df['cumulative_pct'] >= 80].index[0]
+    pct_incidents = (idx_80 + 1) / len(pareto_df) * 100
+
+    print(f"Critical Insight: {pct_incidents:.0f}% of incidents cause 80% of costs")
+    print(f"Top {idx_80+1} incidents = ${pareto_df['cumulative_cost'].iloc[idx_80]/1e6:.1f}M")
+    print("Focus remediation on the highest-cost system-region combinations")
 
     # Step 9: Generate Visualizations
     print_header("STEP 9: GENERATING VISUALIZATIONS")
