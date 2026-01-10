@@ -23,6 +23,8 @@ from src.analysis.breach_analysis import (
 )
 from src.visualizations.charts import generate_all_visualizations
 from src.models.risk_prediction import run_all_models
+from src.presentation.leadership_slides import create_presentation
+from src.dashboard.monitoring_dashboard import launch_dashboard
 
 
 def print_header(title):
@@ -368,6 +370,44 @@ def main():
     3. Establish KPIs and monitoring dashboards
     4. Schedule quarterly security posture reviews
     """)
+
+    # Interactive menu for next steps
+    print_header("INTERACTIVE OPTIONS")
+    print("""
+    Select an option:
+    [1] Generate Leadership Presentation (PDF)
+    [2] Launch Monitoring Dashboard (GUI)
+    [3] Both - Generate presentation and launch dashboard
+    [4] Exit
+    """)
+
+    while True:
+        choice = input("\nEnter your choice (1-4): ").strip()
+
+        if choice == '1':
+            print("\nGenerating leadership presentation...")
+            pdf_path = create_presentation()
+            print(f"Presentation saved to: {pdf_path}")
+
+        elif choice == '2':
+            print("\nLaunching monitoring dashboard...")
+            launch_dashboard()
+            break
+
+        elif choice == '3':
+            print("\nGenerating leadership presentation...")
+            pdf_path = create_presentation()
+            print(f"Presentation saved to: {pdf_path}")
+            print("\nLaunching monitoring dashboard...")
+            launch_dashboard()
+            break
+
+        elif choice == '4':
+            print("\nExiting. Thank you!")
+            break
+
+        else:
+            print("Invalid choice. Please enter 1, 2, 3, or 4.")
 
 
 if __name__ == "__main__":
