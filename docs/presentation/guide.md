@@ -390,8 +390,11 @@ Add industry comparison:
 ## File Structure Reference
 
 ```
+docs/presentation/
+├── guide.md
+└── script.md
+
 presentation/
-├── PRESENTATION_GUIDE.md     (This file)
 └── visuals/
     ├── cost_by_system.png
     ├── cost_by_region.png
@@ -427,4 +430,3 @@ Analysis functions: src/analysis/breach_analysis.py
 ---
 
 *Document prepared by Team DoomScrollers for Mini-ITC F25*
-*Last updated: November 2025*
